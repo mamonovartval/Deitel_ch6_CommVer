@@ -10,6 +10,7 @@
 
 
 
+
 using namespace std;
 /*int main()
 {
@@ -1698,67 +1699,81 @@ int mystery(int a, int b)
 
 // 6.54
 
-int rollDice(); // бросает кости, вычисляет и выводит сумму
-void oneGame(int, int); // make model one game
+/*int rollDice(); // бросает кости, вычисляет и выводит сумму
+void oneGame(int &, int, int &); // make model one game
 
 int main()
 {
 	// перечисление с константами, представлЯJОЩИМИ состояние игры
-	enum Status { CONTINUE, WON, LOST };
+	enum Status { CONTINUE, WON, LOST, DEFAULT };
 
 	int myPoint; // " очко " (игра н е вwиграна и н е проиграна сразу)
+	int wager; // define game wager in $
+	int bankBalance{ 1000 }; // inintialize bank value of 1000 $
 	Status gameStatus; // может содержать CONTINUE, WON ип и LOST
 
 	// засеять rенератор случайных чисел текущим временем
 	srand(time(0));
+	while (true)
+	{
+		gameStatus = DEFAULT; // initialize status before start
+		
+		oneGame(wager, gameStatus, bankBalance);
 
-	int sumOfDice = rollDice(); // первый бросок костей
+		int sumOfDice = rollDice(); // первый бросок костей
 
-   // определить п о первому броску состояние игры и " очко "
-	switch (sumOfDice)
-	{
-	case 7: // вwигрl.IШ - 7 при первом броске
-	case 11: // вwигрl.IШ - 1 1 при первом броске
-	{
-		gameStatus = WON;
-		break;
-	}
-	case 2: // проигрldШ - 2 при первом броске
-	case 3: // проигрl.IШ - 3 при первом броске
-	case 12: // проигрl.IШ - 1 2 при первом броске
-	{
-		gameStatus = LOST;
-		break;
-	}
-	default: // не •wигрl.IШ и не проигрl.IШ, запомнить очко
-	{
-		gameStatus = CONTINUE; // игра не окончена
-		myPoint = sumOfDice; // з апомнить пункт
-		cout << " Point is " << myPoint << endl;
-		break; // в конце swi tch н е обязателен
-	}
-	}// конец swi tch
-
-// пока игра не закончена
-	while (gameStatus == CONTINUE) // не WON ипи LOST
-	{
-		sumOfDice = rollDice(); // бросить кости снова
-
-	   // determine game status
-		if (sumOfDice == myPoint) // вwигрl.IШ броском очка
+	   // определить по первому броску состояние игры и " очко "
+		switch (sumOfDice)
+		{
+		case 7: // вwигрl.IШ - 7 при первом броске
+		case 11: // вwигрl.IШ - 1 1 при первом броске
+		{
 			gameStatus = WON;
-		else
-			if (sumOfDice == 7) // проигрldШ броском 7
+			oneGame(wager, gameStatus, bankBalance);
+			break;
+		}
+		case 2: // проигрldШ - 2 при первом броске
+		case 3: // проигрl.IШ - 3 при первом броске
+		case 12: // проигрl.IШ - 1 2 при первом броске
+		{
+			gameStatus = LOST;
+			oneGame(wager, gameStatus, bankBalance);
+			break;
+		}
+		default: // не •wигрl.IШ и не проигрl.IШ, запомнить очко
+		{
+			gameStatus = CONTINUE; // игра не окончена
+			myPoint = sumOfDice; // запомнить пункт
+			cout << " Point is " << myPoint << endl;
+			break; // в конце swi tch н е обязателен
+		}
+		}// конец swi tch
+
+	// пока игра не закончена
+		while (gameStatus == CONTINUE) // не WON ипи LOST
+		{
+			sumOfDice = rollDice(); // бросить кости снова
+
+		   // determine game status
+			if (sumOfDice == myPoint) // вwигрl.IШ броском очка
+			{
+				gameStatus = WON;
+				oneGame(wager, gameStatus, bankBalance);
+			}
+			else if (sumOfDice == 7) // проигрldШ броском 7
+			{
 				gameStatus = LOST;
-	}// конец whi le
+				oneGame(wager, gameStatus, bankBalance);
+			}
+		}// конец whi le
 
-// вывести сообщение о вwигр1.1Ше ипи проигр1.1Ше
-	if (gameStatus == WON)
-		cout << " Player wins " << endl;
-	else
-		cout << " Player loses " << endl;
-
-	return 0; // успешное з авершение
+		// вывести сообщение о вwигр1.1Ше ипи проигр1.1Ше
+		if (gameStatus == WON)
+			cout << " Player wins " << endl;
+		else
+			cout << " Player loses " << endl;
+	}
+	return 0; // успешное завершение
 }// конец main
 
 // бросить JСости, вычислить сумму и поJСазать результат•􁭡
@@ -1777,9 +1792,152 @@ int rollDice()
 } // JСонец фунJСции rollDice
 
 // make one model game on money
-void oneGame(int wager, int bankBalance = 1000) // inintialize bank value of 1000 $
-{
+void oneGame(int &wager, int status, int &bankBalance) 
+{	
+	int answer; // define variable answer
+
+	// enter wager
+	if (status == 3)
+	{
+		cout << "\nEnter the wager: ";
+		cin >> wager; // enter the data
+	}
+
+	// Veryfication wager
+	while (wager > bankBalance)
+	{
+		cout << "Enter wager not more bankBalance: ";
+		cin >> wager;
+		// Veryfication status DEFAULT = 3
+		if(status == 3)
+			continue;
+	}
+	// Determine winner or looser
+	if (status == 1)
+	{
+		bankBalance += wager; // add wager to balance
+	// print result balance
+		cout << "You balance: " << bankBalance << endl;
+	}
+	else if (status == 2)
+	{
+		bankBalance -= wager;
+		// print result balance
+		cout << "You balance: " << bankBalance << endl;
+	}
 	
+	// determine bankrupt
+	if (bankBalance <= 0)
+	{
+		cout << "Excuse me. You got bankrupt!";
+	}
 
+	// randomize message
+	 
+		answer = 1 + rand() % 3; // randome answer
 
+		switch (answer)
+		{
+		case 1:
+		{
+			cout << setw(10) << "Wow. Are you going to get bankrut, ha!" << endl;
+			break;
+		}
+		case 2:
+		{
+			cout << setw(10) << "Chalenge your fate!" << endl;
+			break;
+		}
+		case 3:
+		{
+			cout << setw(10) << "You are lucky! Now it's time to exchange chips for money!" << endl;
+			break;
+		}
+		}
+}*/
+
+// 6.55
+
+/*int squareCircle(int); // prototype of function
+
+int main()
+{
+	int radCircle; // define redius of cicrcle
+
+	cout << "Enter the radius of circle: ";
+	cin >> radCircle; // enter data
+
+	cout << "The square of circle: " << squareCircle(radCircle) << endl;
+
+	return 0;
+}
+
+int squareCircle(int r)
+{
+	return 3.14 * pow(r, 2); // calculate the square
+}*/
+
+// 6.56
+
+/*int tripleCallByValue(int x)
+{
+	return 3 * x;
+}
+
+void tripleByReference(int &y)
+{
+	y = 3 * y;
+}
+
+int main()
+{
+	int count{ 3 };
+	
+	cout << count << endl;
+	cout << tripleCallByValue(count) << endl;
+	cout << count << endl;
+	tripleByReference(count);
+	cout << count << endl;
+	return 0;
+}*/
+
+// 6.57
+
+// 6.58
+
+#include "MinimumOf2.h"
+
+int main()
+{
+	// демонстрация min со значениями типа int
+	int intl, int2;
+
+	cout << "Input three integer values: ";
+	cin >> intl >> int2;
+
+	// вызвать int - версию ma.ximurn
+	cout << "The maximum integer value is: "
+		<< minimum(intl, int2);
+
+	// демонстрация maximurn с о значениями типа douЫe
+	double doublel, double2;
+
+	cout << "\n\ninput three douЬle value s : ";
+	cin >> doublel >> double2;
+
+	// вызвать dоuЬlе - версию ma.ximurn
+	cout << "The maximum double value is: "
+		<< minimum(doublel, double2);
+
+	// демонстрация ma.ximurn с о значениями типа char
+	char charl, char2;
+
+	cout << "\n\ninput three characters: ";
+	cin >> charl >> char2;
+
+	// вызвать сhаr - версию ma.ximurn
+	cout << "The maximum character value is: "
+		<< minimum(charl, char2) << endl;
+
+return 0;
 }

@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GradeBook.h" />
+    <ClInclude Include="MinimumOf2.h" />
     <ClInclude Include="maximum.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
